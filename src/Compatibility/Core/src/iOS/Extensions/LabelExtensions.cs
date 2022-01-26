@@ -113,10 +113,10 @@ namespace Microsoft.Maui.Controls.Compatibility.Platform.MacOS
 			var glyphRange = new NSRange();
 
 #if __MOBILE__
-			layoutManager.CharacterRangeForGlyphRange(characterRange, ref glyphRange);
+			layoutManager.GetCharacterRange(characterRange, ref glyphRange);
 #else
 #pragma warning disable CS0618 // Type or member is obsolete
-			layoutManager.CharacterRangeForGlyphRange(characterRange, out glyphRange);
+			layoutManager.GetCharacterRange(characterRange, out glyphRange);
 #pragma warning restore CS0618 // Type or member is obsolete
 #endif
 			return layoutManager.GetBoundingRect(glyphRange, textContainer);
