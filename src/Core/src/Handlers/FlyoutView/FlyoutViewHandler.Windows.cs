@@ -6,34 +6,28 @@ using Windows.Foundation;
 
 namespace Microsoft.Maui.Handlers
 {
-	public partial class FlyoutViewHandler : ViewHandler<IFlyoutView, MauiNavigationView>
+	public partial class FlyoutViewHandler : ViewHandler<IFlyoutView, RootNavigationView>
 	{
 		readonly FlyoutPanel _flyoutPanel = new FlyoutPanel();
 		long? _registerCallbackToken;
 		NavigationRootManager? _navigationRootManager;
-		protected override MauiNavigationView CreateNativeView()
+		protected override RootNavigationView CreateNativeView()
 		{
-			var navigationView = new MauiNavigationView();
+			var navigationView = new RootNavigationView();
 
 			navigationView.PaneFooter = _flyoutPanel;
 			return navigationView;
 		}
 
-		protected override void ConnectHandler(MauiNavigationView nativeView)
+		protected override void ConnectHandler(RootNavigationView nativeView)
 		{
 			_navigationRootManager = MauiContext?.GetNavigationRootManager();
 			nativeView.FlyoutPaneSizeChanged += OnFlyoutPaneSizeChanged;
 			nativeView.PaneOpened += OnPaneOepened;
 			_registerCallbackToken = nativeView.RegisterPropertyChangedCallback(NavigationView.IsBackButtonVisibleProperty, BackButtonVisibleChanged);
-
-			nativeView.RegisterPropertyChangedCallback(NavigationView.PaneDisplayModeProperty, PaneDisplayModeChanged);
 		}
 
-		private void PaneDisplayModeChanged(DependencyObject sender, DependencyProperty dp)
-		{
-		}
-
-		protected override void DisconnectHandler(MauiNavigationView nativeView)
+		protected override void DisconnectHandler(RootNavigationView nativeView)
 		{
 			nativeView.FlyoutPaneSizeChanged += OnFlyoutPaneSizeChanged;
 			nativeView.PaneOpened -= OnPaneOepened;
@@ -89,19 +83,19 @@ namespace Microsoft.Maui.Handlers
 		void UpdateDetail()
 		{
 			_ = MauiContext ?? throw new InvalidOperationException($"{nameof(MauiContext)} should have been set by base class.");
-			_ = VirtualView.Detail.ToNative(MauiContext);
+			_ = VirtualView.Detail.ToPlatform(MauiContext);
 
-			NativeView.Content = VirtualView.Detail.ToNative();
+			NativeView.Content = VirtualView.Detail.ToPlatform();
 		}
 
 		void UpdateFlyout()
 		{
 			_ = MauiContext ?? throw new InvalidOperationException($"{nameof(MauiContext)} should have been set by base class.");
-			_ = VirtualView.Flyout.ToNative(MauiContext);
+			_ = VirtualView.Flyout.ToPlatform(MauiContext);
 
 			_flyoutPanel.Children.Clear();
 
-			if (VirtualView.Flyout.ToNative() is UIElement element)
+			if (VirtualView.Flyout.ToPlatform() is UIElement element)
 				_flyoutPanel.Children.Add(element);
 		}
 
