@@ -64,6 +64,11 @@ namespace Microsoft.Maui.Platform
 			nativeView.Enabled = view.IsEnabled;
 		}
 
+		public static void UpdateInputTransparent(this AView nativeView, IView view)
+		{
+			// TODO: Manange InputTransparent on Android
+		}
+
 		public static void UpdateVisibility(this AView nativeView, IView view)
 		{
 			nativeView.Visibility = view.Visibility.ToNativeVisibility();

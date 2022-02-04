@@ -14,6 +14,8 @@ namespace Microsoft.Maui.UnitTests
 		IElement IElement.Parent => Parent;
 
 		public bool IsEnabled { get; set; }
+		
+		public bool InputTransparent { get; set; } = false;
 
 		public Visibility Visibility { get; set; }
 

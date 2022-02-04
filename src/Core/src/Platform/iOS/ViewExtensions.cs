@@ -25,6 +25,18 @@ namespace Microsoft.Maui.Platform
 			uiControl.Enabled = view.IsEnabled;
 		}
 
+		public static void UpdateInputTransparent(this UIView nativeView, IView view)
+		{
+			bool shouldInteract;
+
+			if (view is ILayout layout)
+				shouldInteract = layout.IsEnabled;
+			else
+				shouldInteract = !view.InputTransparent && view.IsEnabled;
+
+			nativeView.UserInteractionEnabled = shouldInteract;
+		}
+
 		public static void UpdateVisibility(this UIView nativeView, IView view) =>
 			ViewExtensions.UpdateVisibility(nativeView, view.Visibility);
 

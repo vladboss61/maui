@@ -31,6 +31,9 @@ namespace Microsoft.Maui.Platform
 		public static void UpdateIsEnabled(this FrameworkElement nativeView, IView view) =>
 			(nativeView as Control)?.UpdateIsEnabled(view.IsEnabled);
 
+		public static void UpdateInputTransparent(this FrameworkElement nativeView, IView view) =>
+			(nativeView as Control)?.UpdateInputTransparent(view);
+
 		public static void UpdateVisibility(this FrameworkElement nativeView, IView view)
 		{
 			double opacity = view.Opacity;
