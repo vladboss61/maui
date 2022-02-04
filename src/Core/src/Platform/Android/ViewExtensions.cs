@@ -37,7 +37,7 @@ namespace Microsoft.Maui.Platform
 			}
 			else
 			{
-				visibility = (int)view.Visibility.ToNativeVisibility();
+				visibility = (int)view.Visibility.ToPlatformVisibility();
 			}
 
 			// NOTE: use named arguments for clarity
@@ -67,7 +67,7 @@ namespace Microsoft.Maui.Platform
 
 		public static void UpdateVisibility(this AView nativeView, IView view)
 		{
-			nativeView.Visibility = view.Visibility.ToNativeVisibility();
+			nativeView.Visibility = view.Visibility.ToPlatformVisibility();
 		}
 
 		public static void UpdateClip(this AView nativeView, IView view)
@@ -87,7 +87,7 @@ namespace Microsoft.Maui.Platform
 				wrapper.Border = (view as IBorder)?.Border;
 		}
 
-		public static ViewStates ToNativeVisibility(this Visibility visibility)
+		public static ViewStates ToPlatformVisibility(this Visibility visibility)
 		{
 			return visibility switch
 			{
@@ -162,7 +162,7 @@ namespace Microsoft.Maui.Platform
 				if (paint is SolidPaint solidPaint)
 				{
 					if (solidPaint.Color is Color backgroundColor)
-						nativeView.SetBackgroundColor(backgroundColor.ToNative());
+						nativeView.SetBackgroundColor(backgroundColor.ToPlatform());
 				}
 				else
 				{
