@@ -67,7 +67,7 @@ namespace Microsoft.Maui.Platform
 				return false;
 			}
 
-			if (layout.IsEnabled && layout.InputTransparent)
+			if (layout.IsEnabled && layout.InputTransparent && !layout.CascadeInputTransparent)
 			{
 				return true;
 			}

@@ -30,7 +30,16 @@ namespace Microsoft.Maui.Platform
 			bool shouldInteract;
 
 			if (view is ILayout layout)
-				shouldInteract = layout.IsEnabled;
+			{
+				if (layout.InputTransparent)
+				{
+					shouldInteract = !layout.CascadeInputTransparent;
+				}
+				else
+				{
+					shouldInteract = layout.IsEnabled;
+				}
+			}
 			else
 				shouldInteract = !view.InputTransparent && view.IsEnabled;
 

@@ -84,6 +84,24 @@ namespace Microsoft.Maui.Controls
 			}
 		}
 
+		public static readonly BindableProperty CascadeInputTransparentProperty =
+			BindableProperty.Create(nameof(CascadeInputTransparent), typeof(bool), typeof(Layout), true,	
+				propertyChanged: CascadeInputTransparentPropertyChanged);
+	
+		public bool CascadeInputTransparent
+		{
+			get => (bool)GetValue(CascadeInputTransparentProperty);
+			set => SetValue(CascadeInputTransparentProperty, value);
+		}
+
+		static void CascadeInputTransparentPropertyChanged(BindableObject bindableObject, object oldValue, object newValue)
+		{
+			if (bindableObject is IView view)
+			{
+				view.Handler?.UpdateValue(nameof(Maui.ILayout.CascadeInputTransparent));
+			}
+		}
+
 		bool Maui.ILayout.ClipsToBounds => IsClippedToBounds;
 
 		/// <include file="../../../docs/Microsoft.Maui.Controls/Layout.xml" path="//Member[@MemberName='PaddingProperty']/Docs" />

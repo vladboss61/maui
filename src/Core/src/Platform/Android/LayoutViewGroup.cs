@@ -37,7 +37,12 @@ namespace Microsoft.Maui.Platform
 
 		public override bool DispatchTouchEvent(MotionEvent? e)
 		{
-			if (VirtualView == null || VirtualView.InputTransparent)
+			bool cascadeInputTransparent = true;
+
+			if (VirtualView is ILayout layout)
+				cascadeInputTransparent = layout.CascadeInputTransparent;
+
+			if (VirtualView == null || (VirtualView.InputTransparent && cascadeInputTransparent))
 			{
 				// If the VirtualView is InputTransparent, this ViewGroup will be marked InputTransparent
 				// If we're InputTransparent and our transparency should be applied to our child controls,
