@@ -16,7 +16,7 @@ namespace Microsoft.Maui.UnitTests.Layouts
 		{
 			public bool ClipsToBounds { get; set; }
 
-			public bool InputTransparent { get; set; };
+			public bool InputTransparent { get; set; }
 
 			#region IView stuff
 
