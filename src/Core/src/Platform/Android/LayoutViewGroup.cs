@@ -35,6 +35,20 @@ namespace Microsoft.Maui.Platform
 
 		public bool ClipsToBounds { get; set; }
 
+		public override bool DispatchTouchEvent(MotionEvent? e)
+		{
+			if (VirtualView == null || VirtualView.InputTransparent)
+			{
+				// If the VirtualView is InputTransparent, this ViewGroup will be marked InputTransparent
+				// If we're InputTransparent and our transparency should be applied to our child controls,
+				// we return false on all touch events without even bothering to send them to the child Views
+
+				return false; // IOW, not handled
+			}
+
+			return base.DispatchTouchEvent(e);
+		}
+
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
 			if (Context == null)
@@ -88,6 +102,7 @@ namespace Microsoft.Maui.Platform
 			}
 		}
 
+		internal IView? VirtualView { get; set; }
 		internal Func<double, double, Size>? CrossPlatformMeasure { get; set; }
 		internal Func<Rectangle, Size>? CrossPlatformArrange { get; set; }
 	}

@@ -8,23 +8,21 @@
             <Label      
                 Text="InputTransparent False"
                 Style="{StaticResource Headline}"/>
-            <Frame
-                BackgroundColor="Red"
+            <Grid
                 InputTransparent="False">
                 <Button
                     Text="Clicked"
                     Clicked="OnButtonClicked"/>
-            </Frame>
+            </Grid>
             <Label
                 Text="InputTransparent True"
                 Style="{StaticResource Headline}"/>
-            <Frame
-                BackgroundColor="Red"
+            <Grid
                 InputTransparent="True">
                 <Button
                     Text="Clicked"
                     Clicked="OnButtonClicked"/>
-            </Frame>
+            </Grid>
         </VerticalStackLayout>
     </ContentPage.Content>
 </ContentPage>
