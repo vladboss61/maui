@@ -21,9 +21,6 @@ namespace Microsoft.Maui.Platform
 		public static void UpdateIsEnabled(this Control nativeControl, bool isEnabled) =>
 			nativeControl.IsEnabled = isEnabled;
 
-		public static void UpdateInputTransparent(this Control nativeControl, IView view) =>
-			nativeControl.IsHitTestVisible = view.IsEnabled && !view.InputTransparent;
-
 		public static void UpdateBackground(this Control nativeControl, IView view, UI.Xaml.Media.Brush? defaultBrush = null) =>
 			nativeControl.UpdateBackground(view.Background, defaultBrush);
 

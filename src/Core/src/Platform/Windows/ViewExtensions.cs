@@ -3,16 +3,10 @@ using System;
 using System.Numerics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Graphics.Canvas;
-using Microsoft.Maui.Essentials;
 using Microsoft.Maui.Graphics;
-using Microsoft.Maui.Graphics.Win2D;
-using Microsoft.Maui.Handlers;
-using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using WFlowDirection = Microsoft.UI.Xaml.FlowDirection;
@@ -22,6 +16,8 @@ namespace Microsoft.Maui.Platform
 {
 	public static partial class ViewExtensions
 	{
+		static Canvas? BackgroundLayer;
+
 		public static void TryMoveFocus(this FrameworkElement nativeView, FocusNavigationDirection direction)
 		{
 			if (nativeView?.XamlRoot?.Content is UIElement elem)
@@ -31,8 +27,89 @@ namespace Microsoft.Maui.Platform
 		public static void UpdateIsEnabled(this FrameworkElement nativeView, IView view) =>
 			(nativeView as Control)?.UpdateIsEnabled(view.IsEnabled);
 
-		public static void UpdateInputTransparent(this FrameworkElement nativeView, IView view) =>
-			(nativeView as Control)?.UpdateInputTransparent(view);
+		public static void UpdateInputTransparent(this FrameworkElement nativeView, IView view)
+		{
+			var panel = nativeView as Panel;
+
+			if (NeedsBackgroundLayer(view))
+			{
+				nativeView.IsHitTestVisible = true;
+
+				if (panel !=null)
+					panel.AddBackgroundLayer(view);
+			}
+			else
+			{
+				if (panel != null)
+					panel.RemoveBackgroundLayer(view);
+
+				nativeView.IsHitTestVisible = view.IsEnabled && !view.InputTransparent;
+
+				if (!nativeView.IsHitTestVisible)
+				{
+					return;
+				}
+
+				// If this Panel's background brush is null, the UWP considers it transparent to hit testing (even 
+				// when IsHitTestVisible is true). So we have to explicitly set a background brush to make it show up
+				// in hit testing. 
+				if (view is ILayout && panel != null && panel.Background == null)
+				{
+					panel.Background = new SolidColorBrush(UI.Colors.Transparent);
+				}
+			}
+		}
+
+		internal static bool NeedsBackgroundLayer(IView view)
+		{
+			if (view is not ILayout layout)
+			{
+				return false;
+			}
+
+			if (layout.IsEnabled && layout.InputTransparent)
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		internal static void AddBackgroundLayer(this Panel nativeControl, IView view)
+		{
+			if (BackgroundLayer != null)
+			{
+				return;
+			}
+
+			// In WinUI, once a control has hit testing disabled, all of its child controls
+			// also have hit testing disabled. The exception is a Panel with its 
+			// Background Brush set to `null`; the Panel will be invisible to hit testing, but its
+			// children will work just fine. 
+
+			// In order to handle the situation where we need the layout to be invisible to hit testing,
+			// the child controls to be visible to hit testing, *and* we need to support non-null
+			// background brushes, we insert another empty Panel which is invisible to hit testing; that
+			// Panel will be our Background color
+
+			BackgroundLayer = new Canvas { IsHitTestVisible = false };
+			nativeControl.Children.Insert(0, BackgroundLayer);
+
+			nativeControl.UpdateBackground(view);
+		}
+
+		internal static void RemoveBackgroundLayer(this Panel nativeControl, IView view)
+		{
+			if (BackgroundLayer == null)
+			{
+				return;
+			}
+
+			nativeControl.Children.Remove(BackgroundLayer);
+			BackgroundLayer = null;
+
+			nativeControl.UpdateBackground(view);
+		}
 
 		public static void UpdateVisibility(this FrameworkElement nativeView, IView view)
 		{
@@ -251,9 +328,9 @@ namespace Microsoft.Maui.Platform
 			return await nativeView.RenderAsJPEG();
 		}
 
-		public static Task<byte[]?> RenderAsPNG(this FrameworkElement view) => view != null ? view.RenderAsPNGAsync() : Task.FromResult<byte[]?>(null);
+		public static Task<byte[]?> RenderAsPNG(this FrameworkElement view) =>  Task.FromResult<byte[]?>(null);
 
-		public static Task<byte[]?> RenderAsJPEG(this FrameworkElement view) => view != null ? view.RenderAsJPEGAsync() : Task.FromResult<byte[]?>(null);
+		public static Task<byte[]?> RenderAsJPEG(this FrameworkElement view) =>  Task.FromResult<byte[]?>(null);
 
 		internal static Matrix4x4 GetViewTransform(this IView view)
 		{
