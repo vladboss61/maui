@@ -13,6 +13,7 @@ namespace Microsoft.Maui.Platform
 		IMauiContext _mauiContext;
 		WindowRootView _rootView;
 		WindowHeader? _windowHeader;
+		IMenuBar? _menuBar;
 
 		public NavigationRootManager(IMauiContext mauiContext)
 		{
@@ -59,7 +60,7 @@ namespace Microsoft.Maui.Platform
 			}
 			else
 			{
-				if(_rootView.Content is RootNavigationView navView)
+				if (_rootView.Content is RootNavigationView navView)
 				{
 					rootNavigationView = navView;
 				}
@@ -67,7 +68,7 @@ namespace Microsoft.Maui.Platform
 				{
 					rootNavigationView = new RootNavigationView();
 				}
-				
+
 				rootNavigationView.Content = nativeView;
 				_rootView.Content = rootNavigationView;
 			}
@@ -111,6 +112,15 @@ namespace Microsoft.Maui.Platform
 		internal void SetWindowTitle(string? title)
 		{
 			_rootView.SetWindowTitle(title);
+		}
+
+		internal void SetMenuBar(IMenuBar? menuBar)
+		{
+			_menuBar = menuBar;
+			if (menuBar != null)
+				_rootView.SetMenuBar((MenuBar)menuBar.ToPlatform(_mauiContext));
+			else
+				_rootView.SetMenuBar(null);
 		}
 
 		internal void SetToolbar(FrameworkElement toolBar)
