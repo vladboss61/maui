@@ -4,13 +4,11 @@ parameters:
   poolName: ''
 
 steps:
-  # Disabled
   - task: UseDotNet@2                 # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops
     displayName: 'Use .NET SDK 6'
     inputs:
       packageType: sdk
       version: 6.0.x
-    enabled: False
 
   - pwsh: |
       dotnet --version
@@ -105,7 +103,9 @@ steps:
   # Prepare Both
   - pwsh: ./build.ps1 --target provision
     displayName: 'Cake Provision'
-    condition: eq(variables['provisioningCake'], 'true')
+    # UNDONE: TEST:
+    # condition: eq(variables['provisioningCake'], 'true')
+    condition: succeeded()
   - pwsh: dotnet nuget locals all --clear
     displayName: 'Clear all NuGet caches'
 
