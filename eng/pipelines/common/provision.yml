@@ -103,9 +103,7 @@ steps:
   # Prepare Both
   - pwsh: ./build.ps1 --target provision
     displayName: 'Cake Provision'
-    # UNDONE: TEST:
-    # condition: eq(variables['provisioningCake'], 'true')
-    condition: succeeded()
+    condition: eq(variables['provisioningCake'], 'true')
   - pwsh: dotnet nuget locals all --clear
     displayName: 'Clear all NuGet caches'
 
