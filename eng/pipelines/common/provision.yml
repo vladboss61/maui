@@ -13,6 +13,9 @@ steps:
   - pwsh: |
       dotnet --version
       dotnet --list-sdks
+      # UNDONE: TEST
+      Write-Host "Provisionator channel variable: PROVISIONATOR_CHANNEL: $(PROVISIONATOR_CHANNEL)"
+      Write-Host "Provisionator channel parameter: provisionatorChannel: ${{ parameters.provisionatorChannel }}
     displayName: 'Show .NET SDK info'
 
   # Prepare macOS
